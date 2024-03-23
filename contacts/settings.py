@@ -25,13 +25,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-rs7isahgcpino6x=x(9l3zfqc_$zi&dk&a&&8-wvlcdcn8clb6"
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY", "localkey2024"
+)  # replace the SECRET_KEY VARIABLE with this.
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = (
+    "RENDER" not in os.environ
+)  # replace the DEBUG variable with this.
+
 
 ALLOWED_HOSTS = []
+
+
+RENDER_EXTERNAL_HOSTNAME = os.environ.get(
+    "RENDER_EXTERNAL_HOSTNAME"
+)
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 
 # Application definition
@@ -45,17 +60,21 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "person.apps.PersonConfig",
     "rest_framework",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",  # add this for CORS to work
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True  # Variable CORS_ALLOW_ALL_ORIGINS is set to True to allow unrestricted access to the API.
 
 ROOT_URLCONF = "contacts.urls"
 
